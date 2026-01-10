@@ -1,0 +1,74 @@
+# =========================
+# Project-specific ignores
+# =========================
+
+# Third-party code / submodules
+3rdparty/
+3rdparty/**
+
+# Experiment results / logs / models
+results/
+results/**
+result/
+result/**
+
+# =========================
+# Python
+# =========================
+
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+conda_env/
+
+# =========================
+# PyTorch / ML
+# =========================
+
+*.pt
+*.pth
+*.ckpt
+*.th
+
+# TensorBoard
+runs/
+tb_logs/
+
+# Weights & Biases
+wandb/
+wandb-debug.log
+wandb-run-*
+
+# =========================
+# OS / Editor
+# =========================
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# =========================
+# Logs / temp
+# =========================
+
+*.log
+*.out
+*.err
+
+# =========================
+# Sacred
+# =========================
+
+_sacred/
