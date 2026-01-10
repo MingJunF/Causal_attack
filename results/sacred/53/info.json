@@ -1,0 +1,1090 @@
+{
+  "ODE_Timeseries_battle_won_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "ODE_Timeseries_battle_won_mean_T": [
+    47,
+    96,
+    148,
+    199,
+    246,
+    293,
+    340,
+    397,
+    448,
+    497,
+    543,
+    585,
+    635,
+    684,
+    747,
+    794,
+    837,
+    928,
+    973,
+    1021,
+    1075,
+    1146,
+    1195,
+    1262,
+    1311,
+    1362,
+    1407,
+    1456,
+    1507,
+    1553,
+    1597,
+    1643
+  ],
+  "ODE_Timeseries_dead_allies_mean": [
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0
+  ],
+  "ODE_Timeseries_dead_allies_mean_T": [
+    47,
+    96,
+    148,
+    199,
+    246,
+    293,
+    340,
+    397,
+    448,
+    497,
+    543,
+    585,
+    635,
+    684,
+    747,
+    794,
+    837,
+    928,
+    973,
+    1021,
+    1075,
+    1146,
+    1195,
+    1262,
+    1311,
+    1362,
+    1407,
+    1456,
+    1507,
+    1553,
+    1597,
+    1643
+  ],
+  "ODE_Timeseries_dead_enemies_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "ODE_Timeseries_dead_enemies_mean_T": [
+    47,
+    96,
+    148,
+    199,
+    246,
+    293,
+    340,
+    397,
+    448,
+    497,
+    543,
+    585,
+    635,
+    684,
+    747,
+    794,
+    837,
+    928,
+    973,
+    1021,
+    1075,
+    1146,
+    1195,
+    1262,
+    1311,
+    1362,
+    1407,
+    1456,
+    1507,
+    1553,
+    1597,
+    1643
+  ],
+  "ODE_Timeseries_ep_length_mean": [
+    47.0,
+    49.0,
+    52.0,
+    51.0,
+    47.0,
+    47.0,
+    47.0,
+    57.0,
+    51.0,
+    49.0,
+    46.0,
+    42.0,
+    50.0,
+    49.0,
+    63.0,
+    47.0,
+    43.0,
+    91.0,
+    45.0,
+    48.0,
+    54.0,
+    71.0,
+    49.0,
+    67.0,
+    49.0,
+    51.0,
+    45.0,
+    49.0,
+    51.0,
+    46.0,
+    44.0,
+    46.0
+  ],
+  "ODE_Timeseries_ep_length_mean_T": [
+    47,
+    96,
+    148,
+    199,
+    246,
+    293,
+    340,
+    397,
+    448,
+    497,
+    543,
+    585,
+    635,
+    684,
+    747,
+    794,
+    837,
+    928,
+    973,
+    1021,
+    1075,
+    1146,
+    1195,
+    1262,
+    1311,
+    1362,
+    1407,
+    1456,
+    1507,
+    1553,
+    1597,
+    1643
+  ],
+  "ODE_Timeseries_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.9754901960784306
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.453431372549019
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.3137254901960784
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.7303921568627456
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.6078431372549021
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.8186274509803924
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.8799019607843133
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.5098039215686273
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.3137254901960784
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.4362745098039215
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.362745098039215
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.6495098039215689
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.531862745098039
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.0392156862745088
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.154411764705882
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.3553921568627445
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.7058823529411768
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 4.02205882352941
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.3897058823529407
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.7058823529411768
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.4681372549019602
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.1200980392156867
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.2696078431372555
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.3431372549019616
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.0759803921568627
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.7647058823529411
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 3.051470588235292
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.3823529411764701
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.2622549019607834
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.2696078431372544
+    }
+  ],
+  "ODE_Timeseries_return_mean_T": [
+    47,
+    96,
+    148,
+    199,
+    246,
+    293,
+    340,
+    397,
+    448,
+    497,
+    543,
+    585,
+    635,
+    684,
+    747,
+    794,
+    837,
+    928,
+    973,
+    1021,
+    1075,
+    1146,
+    1195,
+    1262,
+    1311,
+    1362,
+    1407,
+    1456,
+    1507,
+    1553,
+    1597,
+    1643
+  ],
+  "ODE_Timeseries_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "ODE_Timeseries_return_std_T": [
+    47,
+    96,
+    148,
+    199,
+    246,
+    293,
+    340,
+    397,
+    448,
+    497,
+    543,
+    585,
+    635,
+    684,
+    747,
+    794,
+    837,
+    928,
+    973,
+    1021,
+    1075,
+    1146,
+    1195,
+    1262,
+    1311,
+    1362,
+    1407,
+    1456,
+    1507,
+    1553,
+    1597,
+    1643
+  ],
+  "test_ODE_Timeseries_battle_won_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "test_ODE_Timeseries_battle_won_mean_T": [
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47
+  ],
+  "test_ODE_Timeseries_dead_allies_mean": [
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0
+  ],
+  "test_ODE_Timeseries_dead_allies_mean_T": [
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47
+  ],
+  "test_ODE_Timeseries_dead_enemies_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "test_ODE_Timeseries_dead_enemies_mean_T": [
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47
+  ],
+  "test_ODE_Timeseries_ep_length_mean": [
+    44.0,
+    44.0,
+    51.0,
+    56.0,
+    86.0,
+    47.0,
+    44.0,
+    44.0,
+    49.0,
+    55.0,
+    47.0,
+    43.0,
+    46.0,
+    50.0,
+    49.0,
+    89.0,
+    44.0,
+    50.0,
+    51.0,
+    46.0
+  ],
+  "test_ODE_Timeseries_ep_length_mean_T": [
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47
+  ],
+  "test_ODE_Timeseries_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 3.397058823529411
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.84313725490196
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.1348039215686265
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 3.894607843137249
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.1200980392156863
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.7058823529411766
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.7058823529411766
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.5882352941176459
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.700980392156862
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 4.053921568627451
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.2524509803921566
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.7892156862745086
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 3.058823529411762
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.1225490196078427
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.088235294117647
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 1.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.294117647058823
+    }
+  ],
+  "test_ODE_Timeseries_return_mean_T": [
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47
+  ],
+  "test_ODE_Timeseries_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_ODE_Timeseries_return_std_T": [
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47,
+    47
+  ]
+}

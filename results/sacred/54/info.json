@@ -1,0 +1,110 @@
+{
+  "ODE_Timeseries_battle_won_mean": [
+    0.0
+  ],
+  "ODE_Timeseries_battle_won_mean_T": [
+    45
+  ],
+  "ODE_Timeseries_dead_allies_mean": [
+    5.0
+  ],
+  "ODE_Timeseries_dead_allies_mean_T": [
+    45
+  ],
+  "ODE_Timeseries_dead_enemies_mean": [
+    0.0
+  ],
+  "ODE_Timeseries_dead_enemies_mean_T": [
+    45
+  ],
+  "ODE_Timeseries_ep_length_mean": [
+    45.0
+  ],
+  "ODE_Timeseries_ep_length_mean_T": [
+    45
+  ],
+  "ODE_Timeseries_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 3.855392156862745
+    }
+  ],
+  "ODE_Timeseries_return_mean_T": [
+    45
+  ],
+  "ODE_Timeseries_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "ODE_Timeseries_return_std_T": [
+    45
+  ],
+  "test_ODE_Timeseries_battle_won_mean": [
+    0.0,
+    0.0
+  ],
+  "test_ODE_Timeseries_battle_won_mean_T": [
+    45,
+    45
+  ],
+  "test_ODE_Timeseries_dead_allies_mean": [
+    5.0,
+    5.0
+  ],
+  "test_ODE_Timeseries_dead_allies_mean_T": [
+    45,
+    45
+  ],
+  "test_ODE_Timeseries_dead_enemies_mean": [
+    0.0,
+    0.0
+  ],
+  "test_ODE_Timeseries_dead_enemies_mean_T": [
+    45,
+    45
+  ],
+  "test_ODE_Timeseries_ep_length_mean": [
+    44.0,
+    45.0
+  ],
+  "test_ODE_Timeseries_ep_length_mean_T": [
+    45,
+    45
+  ],
+  "test_ODE_Timeseries_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.4117647058823533
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 2.647058823529412
+    }
+  ],
+  "test_ODE_Timeseries_return_mean_T": [
+    45,
+    45
+  ],
+  "test_ODE_Timeseries_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_ODE_Timeseries_return_std_T": [
+    45,
+    45
+  ]
+}

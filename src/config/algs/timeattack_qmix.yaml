@@ -1,0 +1,81 @@
+# Q-learning with ODE-based time attack
+# === Algorithm ===
+name: "timeattack_qmix"
+
+# === Controller ===
+mac: "basic_mac"
+agent_output_type: "q"
+action_selector: "epsilon_greedy"
+epsilon_start: 1.0
+epsilon_finish: 0.05
+epsilon_anneal_time: 50000
+
+# === Agent ===
+agent: "rnn"
+rnn_hidden_dim: 64
+obs_agent_id: True
+obs_last_action: True
+
+# === Learner ===
+learner: "ode_q_learner"
+
+# === QMIX specific ===
+double_q: True
+mixer: "qmix"
+mixing_embed_dim: 32
+hypernet_layers: 2
+hypernet_embed: 64
+
+# === Optimization ===
+lr: 0.0005
+optim_alpha: 0.99
+optim_eps: 0.00001
+grad_norm_clip: 10
+
+# === RL hyperparameters ===
+gamma: 0.99
+batch_size: 32
+target_update_interval: 200
+
+# === Runner ===
+runner: "episode"
+batch_size_run: 1
+test_nepisode: 20
+test_interval: 2000
+log_interval: 2000
+runner_log_interval: 2000
+learner_log_interval: 2000
+t_max: 2050000
+
+# === Time attack specific ===
+use_ode_model: False
+attack_duration: 3
+trans_input_len: 20
+num_attack_test: 8
+num_attack_train: 12
+num_followup_agents: 2
+
+# === ODE Model parameters ===
+ode_dims: 64
+rec_dims: 32
+augment_dim: 0
+treatment_dim: 1   
+t_dim: 1          
+solver: "dopri5"
+z0_encoder: "GTrans"
+rec_layers: 2
+num_atoms: 5
+output_dim: 1  # 修改：输出单个 Q 值
+dropout: 0.1
+use_attention: 1
+use_onehot: 0
+obsrv_std: 0.01
+temperature: 0.5
+init_attack_step_method: "planner"
+init_agent_random: "True"
+mask_single_treatment: 1  # 新增：单个 treatment 时屏蔽 attention
+feature_out_index: [0]  # 修改：只输出第一个特征（Q 值）
+split_interval: 3  # 新增：训练样本分割间隔
+
+# === Other ===
+use_cuda: True

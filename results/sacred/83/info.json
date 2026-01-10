@@ -1,0 +1,300 @@
+{
+  "ODE_Timeseries_battle_won_mean": [
+    1.0
+  ],
+  "ODE_Timeseries_battle_won_mean_T": [
+    109
+  ],
+  "ODE_Timeseries_dead_allies_mean": [
+    3.0
+  ],
+  "ODE_Timeseries_dead_allies_mean_T": [
+    109
+  ],
+  "ODE_Timeseries_dead_enemies_mean": [
+    5.0
+  ],
+  "ODE_Timeseries_dead_enemies_mean_T": [
+    109
+  ],
+  "ODE_Timeseries_ep_length_mean": [
+    60.0
+  ],
+  "ODE_Timeseries_ep_length_mean_T": [
+    109
+  ],
+  "ODE_Timeseries_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 20.07843137254902
+    }
+  ],
+  "ODE_Timeseries_return_mean_T": [
+    109
+  ],
+  "ODE_Timeseries_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "ODE_Timeseries_return_std_T": [
+    109
+  ],
+  "epsilon": [
+    0.0
+  ],
+  "epsilon_T": [
+    109
+  ],
+  "test_ODE_Timeseries_battle_won_mean": [
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0
+  ],
+  "test_ODE_Timeseries_battle_won_mean_T": [
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109
+  ],
+  "test_ODE_Timeseries_dead_allies_mean": [
+    5.0,
+    3.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    4.0,
+    5.0
+  ],
+  "test_ODE_Timeseries_dead_allies_mean_T": [
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109
+  ],
+  "test_ODE_Timeseries_dead_enemies_mean": [
+    1.0,
+    5.0,
+    3.0,
+    4.0,
+    4.0,
+    1.0,
+    4.0,
+    5.0,
+    3.0
+  ],
+  "test_ODE_Timeseries_dead_enemies_mean_T": [
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109
+  ],
+  "test_ODE_Timeseries_ep_length_mean": [
+    50.0,
+    61.0,
+    66.0,
+    65.0,
+    65.0,
+    43.0,
+    73.0,
+    71.0,
+    50.0
+  ],
+  "test_ODE_Timeseries_ep_length_mean_T": [
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109
+  ],
+  "test_ODE_Timeseries_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.752450980392153
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 20.11274509803922
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 13.196078431372554
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 13.80392156862746
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 15.318627450980394
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.490196078431373
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 15.823529411764708
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 20.00000000000001
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 13.294117647058824
+    }
+  ],
+  "test_ODE_Timeseries_return_mean_T": [
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109
+  ],
+  "test_ODE_Timeseries_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_ODE_Timeseries_return_std_T": [
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109,
+    109
+  ],
+  "test_battle_won_mean": [
+    1.0
+  ],
+  "test_battle_won_mean_T": [
+    109
+  ],
+  "test_dead_allies_mean": [
+    1.0
+  ],
+  "test_dead_allies_mean_T": [
+    109
+  ],
+  "test_dead_enemies_mean": [
+    5.0
+  ],
+  "test_dead_enemies_mean_T": [
+    109
+  ],
+  "test_ep_length_mean": [
+    41.0
+  ],
+  "test_ep_length_mean_T": [
+    109
+  ],
+  "test_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 20.000000000000004
+    }
+  ],
+  "test_return_mean_T": [
+    109
+  ],
+  "test_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_return_std_T": [
+    109
+  ]
+}

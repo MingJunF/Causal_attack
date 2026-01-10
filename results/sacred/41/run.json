@@ -1,0 +1,133 @@
+{
+  "artifacts": [],
+  "command": "my_main",
+  "experiment": {
+    "base_dir": "/mnt/d/Github_Code/uncertainty/WALL/src",
+    "dependencies": [
+      "numpy==1.24.4",
+      "PyYAML==6.0.1",
+      "sacred==0.8.5",
+      "torch==2.4.0+cu124"
+    ],
+    "mainfile": "main.py",
+    "name": "pymarl",
+    "repositories": [
+      {
+        "commit": "347d7d4e571bb313c9bd87ec334a388cd4d60264",
+        "dirty": true,
+        "url": "https://github.com/sunwoolee0504/WALL.git"
+      },
+      {
+        "commit": "347d7d4e571bb313c9bd87ec334a388cd4d60264",
+        "dirty": true,
+        "url": "https://github.com/sunwoolee0504/WALL.git"
+      },
+      {
+        "commit": "347d7d4e571bb313c9bd87ec334a388cd4d60264",
+        "dirty": true,
+        "url": "https://github.com/sunwoolee0504/WALL.git"
+      }
+    ],
+    "sources": [
+      [
+        "main.py",
+        "_sources/main_9b66c6875edac7aa1e100ffe71493799.py"
+      ],
+      [
+        "run.py",
+        "_sources/run_5a1c59a96b62d311819bc3f10e02b067.py"
+      ],
+      [
+        "utils/logging.py",
+        "_sources/logging_e1569c85e75ad7a1daa30bf76691e42b.py"
+      ]
+    ]
+  },
+  "fail_trace": [
+    "Traceback (most recent call last):\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/runners/episode_runner.py\", line 619, in _ode_rollout_edges\n    out = model(time_steps=time_steps, z0=z0, treatment=treatment)\n",
+    "  File \"/home/mingjun/miniconda3/envs/ices/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1553, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n",
+    "  File \"/home/mingjun/miniconda3/envs/ices/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1562, in _call_impl\n    return forward_call(*args, **kwargs)\n",
+    "TypeError: _forward_unimplemented() got an unexpected keyword argument 'time_steps'\n",
+    "\nDuring handling of the above exception, another exception occurred:\n\n",
+    "Traceback (most recent call last):\n",
+    "  File \"/home/mingjun/miniconda3/envs/ices/lib/python3.10/site-packages/sacred/config/captured_function.py\", line 42, in captured_function\n    result = wrapped(*args, **kwargs)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/main.py\", line 35, in my_main\n    run(_run, config, _log)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/run.py\", line 72, in run\n    run_sequential(args=args, logger=logger)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/run.py\", line 235, in run_sequential\n    episode_batch = runner.run_timeseries_attacker(test_mode=False)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/runners/episode_runner.py\", line 747, in run_timeseries_attacker\n    edges_future_base = self._ode_rollout_edges(z0, H, treatment=None)  # [B,H,N,N]\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/runners/episode_runner.py\", line 621, in _ode_rollout_edges\n    raise TypeError(\n",
+    "TypeError: Your CoupledODE.forward signature is not (time_steps,z0,treatment). Expose a 'sample_traj_from_z0' or adapt forward.\n"
+  ],
+  "heartbeat": "2025-11-02T06:17:30.126725",
+  "host": {
+    "ENV": {},
+    "cpu": "AMD Ryzen 7 7800X3D 8-Core Processor",
+    "gpus": {
+      "driver_version": "581.29",
+      "gpus": [
+        {
+          "model": "NVIDIA GeForce RTX 4080 SUPER",
+          "persistence_mode": true,
+          "total_memory": 16376
+        }
+      ]
+    },
+    "hostname": "MJun",
+    "os": [
+      "Linux",
+      "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+    ],
+    "python_version": "3.10.14"
+  },
+  "meta": {
+    "command": "my_main",
+    "config_updates": {
+      "env_args": {
+        "map_name": "2s3z"
+      },
+      "num_attack_test": 8,
+      "num_attack_train": 12,
+      "num_followup_agents": 2,
+      "use_ode_model": true
+    },
+    "named_configs": [],
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--id": null,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "env_args.map_name=2s3z",
+        "num_attack_test=8",
+        "num_attack_train=12",
+        "num_followup_agents=2",
+        "use_ode_model=True"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2025-11-02T06:17:23.422977",
+  "status": "FAILED",
+  "stop_time": "2025-11-02T06:17:30.134637"
+}

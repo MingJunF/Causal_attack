@@ -1,0 +1,118 @@
+{
+  "artifacts": [],
+  "command": "my_main",
+  "experiment": {
+    "base_dir": "/mnt/d/Github_Code/uncertainty/WALL/src",
+    "dependencies": [
+      "numpy==2.2.6",
+      "pyyaml==5.3.1",
+      "sacred==0.8.7",
+      "torch==2.9.1"
+    ],
+    "mainfile": "main.py",
+    "name": "pymarl",
+    "repositories": [
+      {
+        "commit": "347d7d4e571bb313c9bd87ec334a388cd4d60264",
+        "dirty": true,
+        "url": "https://github.com/sunwoolee0504/WALL.git"
+      },
+      {
+        "commit": "347d7d4e571bb313c9bd87ec334a388cd4d60264",
+        "dirty": true,
+        "url": "https://github.com/sunwoolee0504/WALL.git"
+      },
+      {
+        "commit": "347d7d4e571bb313c9bd87ec334a388cd4d60264",
+        "dirty": true,
+        "url": "https://github.com/sunwoolee0504/WALL.git"
+      }
+    ],
+    "sources": [
+      [
+        "main.py",
+        "_sources/main_9b66c6875edac7aa1e100ffe71493799.py"
+      ],
+      [
+        "run.py",
+        "_sources/run_1b7b714925edcb885a1b78d8799abd4c.py"
+      ],
+      [
+        "utils/logging.py",
+        "_sources/logging_e1569c85e75ad7a1daa30bf76691e42b.py"
+      ]
+    ]
+  },
+  "fail_trace": [
+    "Traceback (most recent call last):\n",
+    "  File \"/home/mingjun/miniconda3/envs/pymarl/lib/python3.10/site-packages/sacred/config/captured_function.py\", line 42, in captured_function\n    result = wrapped(*args, **kwargs)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/main.py\", line 35, in my_main\n    run(_run, config, _log)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/run.py\", line 73, in run\n    run_sequential(args=args, logger=logger)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/run.py\", line 268, in run_sequential\n    learner.train(episode_sample, runner.t_env, episode)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/learners/Continous_learner.py\", line 510, in train\n    indi_q_slided[batch_indices, time_indices, followup_agents_t[:, :, agent]] = chosen_predict_chosen_attacker_q\n",
+    "torch.AcceleratorError: CUDA error: device-side assert triggered\nSearch for `cudaErrorAssert' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.\nCUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.\nFor debugging consider passing CUDA_LAUNCH_BLOCKING=1\nCompile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.\n\n"
+  ],
+  "heartbeat": "2026-01-09T15:44:46.836593",
+  "host": {
+    "ENV": {},
+    "cpu": "AMD Ryzen 7 7800X3D 8-Core Processor",
+    "gpus": {
+      "driver_version": "591.44",
+      "gpus": [
+        {
+          "model": "NVIDIA GeForce RTX 4080 SUPER",
+          "persistence_mode": true,
+          "total_memory": 16376
+        }
+      ]
+    },
+    "hostname": "MJun",
+    "os": [
+      "Linux",
+      "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+    ],
+    "python_version": "3.10.19"
+  },
+  "meta": {
+    "command": "my_main",
+    "config_updates": {
+      "env_args": {
+        "map_name": "2s3z"
+      }
+    },
+    "named_configs": [],
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--id": null,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "env_args.map_name=2s3z"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2026-01-09T15:43:52.373580",
+  "status": "FAILED",
+  "stop_time": "2026-01-09T15:44:46.851683"
+}

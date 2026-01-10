@@ -1,0 +1,320 @@
+{
+  "Wolfpack_battle_won_mean": [
+    0.0
+  ],
+  "Wolfpack_battle_won_mean_T": [
+    120
+  ],
+  "Wolfpack_dead_allies_mean": [
+    0.0
+  ],
+  "Wolfpack_dead_allies_mean_T": [
+    120
+  ],
+  "Wolfpack_dead_enemies_mean": [
+    0.0
+  ],
+  "Wolfpack_dead_enemies_mean_T": [
+    120
+  ],
+  "Wolfpack_ep_length_mean": [
+    120.0
+  ],
+  "Wolfpack_ep_length_mean_T": [
+    120
+  ],
+  "Wolfpack_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "Wolfpack_return_mean_T": [
+    120
+  ],
+  "Wolfpack_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "Wolfpack_return_std_T": [
+    120
+  ],
+  "epsilon": [
+    0.0
+  ],
+  "epsilon_T": [
+    120
+  ],
+  "test_Wolfpack_battle_won_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "test_Wolfpack_battle_won_mean_T": [
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120
+  ],
+  "test_Wolfpack_dead_allies_mean": [
+    2.0,
+    0.0,
+    0.0,
+    0.0,
+    5.0,
+    0.0,
+    2.0,
+    0.0,
+    5.0,
+    2.0
+  ],
+  "test_Wolfpack_dead_allies_mean_T": [
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120
+  ],
+  "test_Wolfpack_dead_enemies_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "test_Wolfpack_dead_enemies_mean_T": [
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120
+  ],
+  "test_Wolfpack_ep_length_mean": [
+    120.0,
+    120.0,
+    120.0,
+    120.0,
+    82.0,
+    120.0,
+    120.0,
+    120.0,
+    114.0,
+    120.0
+  ],
+  "test_Wolfpack_ep_length_mean_T": [
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120
+  ],
+  "test_Wolfpack_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 5.96078431372549
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_Wolfpack_return_mean_T": [
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120
+  ],
+  "test_Wolfpack_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_Wolfpack_return_std_T": [
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120
+  ],
+  "test_battle_won_mean": [
+    0.0
+  ],
+  "test_battle_won_mean_T": [
+    120
+  ],
+  "test_dead_allies_mean": [
+    2.0
+  ],
+  "test_dead_allies_mean_T": [
+    120
+  ],
+  "test_dead_enemies_mean": [
+    0.0
+  ],
+  "test_dead_enemies_mean_T": [
+    120
+  ],
+  "test_ep_length_mean": [
+    120.0
+  ],
+  "test_ep_length_mean_T": [
+    120
+  ],
+  "test_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_return_mean_T": [
+    120
+  ],
+  "test_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_return_std_T": [
+    120
+  ]
+}

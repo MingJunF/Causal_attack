@@ -1,0 +1,117 @@
+{
+  "artifacts": [],
+  "command": "my_main",
+  "experiment": {
+    "base_dir": "/mnt/d/Github_Code/uncertainty/WALL/src",
+    "dependencies": [
+      "numpy==1.24.4",
+      "PyYAML==6.0.1",
+      "sacred==0.8.5",
+      "torch==2.4.0+cu124"
+    ],
+    "mainfile": "main.py",
+    "name": "pymarl",
+    "repositories": [
+      {
+        "commit": "347d7d4e571bb313c9bd87ec334a388cd4d60264",
+        "dirty": true,
+        "url": "https://github.com/sunwoolee0504/WALL.git"
+      },
+      {
+        "commit": "347d7d4e571bb313c9bd87ec334a388cd4d60264",
+        "dirty": true,
+        "url": "https://github.com/sunwoolee0504/WALL.git"
+      },
+      {
+        "commit": "347d7d4e571bb313c9bd87ec334a388cd4d60264",
+        "dirty": true,
+        "url": "https://github.com/sunwoolee0504/WALL.git"
+      }
+    ],
+    "sources": [
+      [
+        "main.py",
+        "_sources/main_9b66c6875edac7aa1e100ffe71493799.py"
+      ],
+      [
+        "run.py",
+        "_sources/run_5a1c59a96b62d311819bc3f10e02b067.py"
+      ],
+      [
+        "utils/logging.py",
+        "_sources/logging_e1569c85e75ad7a1daa30bf76691e42b.py"
+      ]
+    ]
+  },
+  "heartbeat": "2025-11-04T06:39:27.040732",
+  "host": {
+    "ENV": {},
+    "cpu": "AMD Ryzen 7 7800X3D 8-Core Processor",
+    "gpus": {
+      "driver_version": "581.29",
+      "gpus": [
+        {
+          "model": "NVIDIA GeForce RTX 4080 SUPER",
+          "persistence_mode": true,
+          "total_memory": 16376
+        }
+      ]
+    },
+    "hostname": "MJun",
+    "os": [
+      "Linux",
+      "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+    ],
+    "python_version": "3.10.14"
+  },
+  "meta": {
+    "command": "my_main",
+    "config_updates": {
+      "env_args": {
+        "map_name": "2s3z"
+      },
+      "num_attack_test": 8,
+      "num_attack_train": 12,
+      "num_followup_agents": 2,
+      "use_ode_model": true
+    },
+    "named_configs": [],
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--id": null,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "env_args.map_name=2s3z",
+        "num_attack_test=8",
+        "num_attack_train=12",
+        "num_followup_agents=2",
+        "use_ode_model=True"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2025-11-04T06:38:57.971987",
+  "status": "INTERRUPTED",
+  "stop_time": "2025-11-04T06:39:27.052443"
+}
