@@ -63,7 +63,7 @@ def run(_run, _config, _log):
                         group='robust',
                         dir=str(wandb_exp_direc),
                         job_type="training",
-                        mode="disabled", # offline, online, disabled
+                        #mode="disabled", # offline, online, disabled
                         reinit=True)
 
     # sacred is on by default
@@ -165,6 +165,7 @@ def run_sequential(args, logger):
         qdifference_transformer = None
         planning_transformer = None
         timeseries_ode_model=None
+        obs_predictor = None
         print("Using regular QLearner - skipping transformer initialization")
     else:
         raise ValueError("Learner {} not recognised.".format(args.learner))
@@ -278,9 +279,20 @@ def run_sequential(args, logger):
 
             last_test_T = runner.t_env
             for _ in range(n_test_runs):
-                runner.run(test_mode=True)                      # 正常模式测试
-                runner.run_continuous_attack(test_mode=True)    # wolfpack 攻击测试
-                #runner.run_timeseries_attacker(test_mode=True)  # 时序攻击测试
+                if args.learner == "WALL_q_learner":
+                    # WALL 模型需要攻击场景训练
+                    episode_batch = runner.run_wolfpack_attacker(test_mode=False)
+                if args.learner == "Causal_q_learner":
+                    # WALL 模型需要攻击场景训练
+                    episode_batch = runner.run_continuous_attack(test_mode=False)
+                    episode_batch = runner.run_wolfpack_attacker(test_mode=False)            
+                elif args.learner == "ode_q_learner":
+                    # 标准 MARL 模型在正常环境训练
+                    episode_batch = runner.run_timeseries_attacker(test_mode=False)
+                elif args.learner == "q_learner":
+                    episode_batch = runner.run(test_mode=False)
+                else:
+                    raise ValueError(f"Unknown learner: {args.learner}")
         if args.save_model and (runner.t_env - model_save_time >= args.save_model_interval or model_save_time == 0):
             model_save_time = runner.t_env
             save_path = os.path.join(args.local_results_path, "models", args.unique_token, str(runner.t_env))

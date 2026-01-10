@@ -28,6 +28,7 @@ QMIX
 ```shell
 python3 src/main.py --config=wall_qmix --env-config=sc2 with env_args.map_name=2s3z num_attack_test=8 num_attack_train=12 num_followup_agents=2 pretrain=True 
 ```
+python3 src/main.py --config=qmix --env-config=sc2 with env_args.map_name=2s3z num_followup_agents=2 pretrain=False 
 VDN
 ```shell
 python3 src/main.py --config=wall_vdn --env-config=sc2 with env_args.map_name=2s3z num_attack_test=8 num_attack_train=12 num_followup_agents=2 pretrain=True 

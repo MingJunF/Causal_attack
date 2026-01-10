@@ -374,18 +374,19 @@ class WALLQLearner:
             self.logger.log_stat("q_taken_mean", (chosen_action_qvals * mask).sum().item()/(mask_elems * self.args.n_agents), t_env)
             self.logger.log_stat("target_mean", (targets * mask).sum().item()/(mask_elems * self.args.n_agents), t_env)
 
-            wandb.log({"loss_td": loss.item()}, step=t_env)
-            wandb.log({"grad_norm": grad_norm}, step=t_env)
-
-            wandb.log({"td_error_abs": (masked_td_error.abs().sum().item()/mask_elems)}, step=t_env)
-            wandb.log({"q_taken_mean": (chosen_action_qvals * mask).sum().item()/(mask_elems * self.args.n_agents)}, step=t_env)
-            wandb.log({"target_mean": (targets * mask).sum().item()/(mask_elems * self.args.n_agents)}, step=t_env)
-
-            wandb.log({"loss_qdiff": loss_qdiff.item()}, step=t_env)
-
-            wandb.log({"loss_state": loss_state.item()}, step=t_env)
-            wandb.log({"loss_obs": loss_obs.item()}, step=t_env)
-            wandb.log({"loss_planning": loss_planning.item()}, step=t_env)
+            if self.args.use_wandb:
+                wandb.log({"loss_td": loss.item()}, step=t_env)
+                wandb.log({"grad_norm": grad_norm}, step=t_env)
+    
+                wandb.log({"td_error_abs": (masked_td_error.abs().sum().item()/mask_elems)}, step=t_env)
+                wandb.log({"q_taken_mean": (chosen_action_qvals * mask).sum().item()/(mask_elems * self.args.n_agents)}, step=t_env)
+                wandb.log({"target_mean": (targets * mask).sum().item()/(mask_elems * self.args.n_agents)}, step=t_env)
+    
+                wandb.log({"loss_qdiff": loss_qdiff.item()}, step=t_env)
+    
+                wandb.log({"loss_state": loss_state.item()}, step=t_env)
+                wandb.log({"loss_obs": loss_obs.item()}, step=t_env)
+                wandb.log({"loss_planning": loss_planning.item()}, step=t_env)
 
             self.log_stats_t = t_env
 
@@ -423,5 +424,9 @@ class WALLQLearner:
             self.mixer.load_state_dict(th.load("{}/mixer.th".format(path), map_location=lambda storage, loc: storage))
         self.optimiser.load_state_dict(th.load("{}/opt.th".format(path), map_location=lambda storage, loc: storage))
 
-        # self.planning_transformer.load_state_dict(th.load("{}/planning_transformer.th".format(path), map_location=lambda storage, loc: storage))
-        # self.optimizer_planning.load_state_dict(th.load("{}/optimizer_planning.th".format(path), map_location=lambda storage, loc: storage))
+    def load_attackers(self, path):
+        self.planning_transformer.load_state_dict(th.load("{}/planning_transformer.th".format(path), map_location=lambda storage, loc: storage))
+        self.optimizer_planning.load_state_dict(th.load("{}/optimizer_planning.th".format(path), map_location=lambda storage, loc: storage))
+
+        self.qdiff_transformer.load_state_dict(th.load("{}/qdiff_transformer.th".format(path), map_location=lambda storage, loc: storage))
+        self.optimizer_qdiff.load_state_dict(th.load("{}/optimizer_qdiff.th".format(path), map_location=lambda storage, loc: storage))
