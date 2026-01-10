@@ -34,10 +34,10 @@ burn_in_period: 100
 name: "qplex"
 
 # --- Wolfpack attack ---
-
+pretrain: True
 followup_l2: False
 init_agent_random: True
-: "planner"
+init_attack_step_method: "planner"
 
 attack_duration: 3
 temperature: 0.5

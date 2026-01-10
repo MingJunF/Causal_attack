@@ -37,13 +37,12 @@ class EpisodeRunner:
         # Log the first run
         self.log_train_stats_t = -1000000
 
-    def setup(self, scheme, groups, preprocess, mac, qdifference_transformer, planning_transformer, timeseries_ode_model,obs_predictor):
+    def setup(self, scheme, groups, preprocess, mac, qdifference_transformer, planning_transformer, obs_predictor):
         self.new_batch = partial(EpisodeBatch, scheme, groups, self.batch_size, self.episode_limit + 1,
                                  preprocess=preprocess, device=self.args.device)
         self.mac = mac
         self.qdiff_transformer = qdifference_transformer
         self.planning_transformer = planning_transformer
-        self.timeseries_ode_model = timeseries_ode_model
         self.obs_predictor = obs_predictor
     def setup_mac_for_attack(self, mac):
         self.mac_for_attack = copy.deepcopy(mac)
@@ -129,7 +128,8 @@ class EpisodeRunner:
             self._log(cur_returns, cur_stats, log_prefix)
             if hasattr(self.mac.action_selector, "epsilon"):
                 self.logger.log_stat("epsilon", self.mac.action_selector.epsilon, self.t_env)
-                wandb.log({"epsilon": self.mac.action_selector.epsilon}, step=self.t_env)
+                if self.args.use_wandb:
+                    wandb.log({"epsilon": self.mac.action_selector.epsilon}, step=self.t_env)
             self.log_train_stats_t = self.t_env
 
         return self.batch
@@ -236,24 +236,25 @@ class EpisodeRunner:
         else:
             raise ValueError(f"Unexpected action shape: {action_onehot.shape}")
 
-    def select_followup_target_continuous(self, obs_fact, actions_fact, actions_cf, prev_attacked_agent_idx):
+    def select_followup_target_continuous(self, obs_fact, actions_fact, actions_cf, prev_attacked_agents):
         """
         Select follow-up attack targets based on obs predictor + counterfactual reasoning.
-        Constraint: cannot attack the same agent as the previous timestep.
+        Constraint: cannot attack agents that were attacked in previous timestep.
         
         Args:
             obs_fact: [B, T, N, obs_shape] - factual observations (actually executed)
             actions_fact: [B, T, N, n_actions] - factual actions (one-hot)
             actions_cf: [B, T, N, n_actions] - counterfactual actions (one-hot)
-            prev_attacked_agent_idx: int - index of agent attacked in previous timestep (to avoid)
+            prev_attacked_agents: list of int - indices of agents attacked in previous timestep (to avoid)
         
         Returns:
-            followup_targets: [B, T] - follow-up target agent indices for each timestep
+            followup_targets: [B, T, num_followup_agents] - follow-up target agent indices for each timestep
         """
         B, T, N, O = obs_fact.shape
         device = obs_fact.device
+        num_followup = self.args.num_followup_agents
         
-        followup_targets = th.zeros(B, T, dtype=th.long, device=device)
+        followup_targets = th.zeros(B, T, num_followup, dtype=th.long, device=device)
         
         # Iterate through each timestep (except last, since we need t+1)
         for t in range(T - 1):
@@ -280,29 +281,30 @@ class EpisodeRunner:
             scores = th.zeros(B, N, device=device)
             
             for j in range(N):
-                # Skip agent that was attacked in previous timestep
-                if j == prev_attacked_agent_idx:
+                # Skip agents that were attacked in previous timestep
+                if j in prev_attacked_agents:
                     scores[:, j] = -float('inf')
                 else:
                     # Score: how much agent j's obs changes between factual and cf
                     obs_diff_j = (obs_next_fact_pred[:, j] - obs_next_cf_pred[:, j]).abs().mean(dim=-1)
                     scores[:, j] = obs_diff_j
             
-            # Select agent with highest score as follow-up target
-            followup_target_t = scores.argmax(dim=1)  # [B]
-            followup_targets[:, t] = followup_target_t
+            # Select top-k agents with highest scores as follow-up targets
+            _, top_indices = th.topk(scores, k=min(num_followup, N), dim=1)  # [B, num_followup]
+            followup_targets[:, t, :] = top_indices[:, :num_followup]
             
             # Update prev_attacked for next iteration
-            prev_attacked_agent_idx = int(followup_target_t[0].item())
+            prev_attacked_agents = top_indices[0, :num_followup].cpu().tolist()
         
-        # Last timestep: fallback to first non-attacked agent
+        # Last timestep: select top-k non-attacked agents
         scores_last = th.zeros(B, N, device=device)
         for j in range(N):
-            if j != prev_attacked_agent_idx:
+            if j not in prev_attacked_agents:
                 scores_last[:, j] = 1.0
             else:
                 scores_last[:, j] = -float('inf')
-        followup_targets[:, -1] = scores_last.argmax(dim=1)
+        _, top_indices_last = th.topk(scores_last, k=min(num_followup, N), dim=1)
+        followup_targets[:, -1, :] = top_indices_last[:, :num_followup]
         
         return followup_targets
 
@@ -430,7 +432,7 @@ class EpisodeRunner:
                         pre_initial_attack_step = self.t
                         attack_cnt += 1
                         initial_attack_flag = initial_attack_flag - 1
-            else:
+            else:  
                 for i in followup_agents_eval:
                     do_actions[:, i] = copy.deepcopy(attacker_actions[:, i])
 
@@ -511,10 +513,11 @@ class EpisodeRunner:
 
         self._log(cur_returns, cur_stats, log_prefix)
 
-        if test_mode:
-            wandb.log({"test wolfpack attack num": do_attack_num}, step=self.t_env)
-        else:
-            wandb.log({"wolfpack attack num": do_attack_num}, step=self.t_env)
+        if self.args.use_wandb:
+            if test_mode:
+                wandb.log({"test wolfpack attack num": do_attack_num}, step=self.t_env)
+            else:
+                wandb.log({"wolfpack attack num": do_attack_num}, step=self.t_env)
 
         return self.batch
 
@@ -592,19 +595,22 @@ class EpisodeRunner:
                     action_cf = act_fact_onehot.clone()
                     action_cf[:, :, initial_agent, :] = act_clean_onehot[:, :, initial_agent, :]
 
-                    # Get the agent attacked in the last timestep (to avoid attacking same agent consecutively)
-                    prev_attacked_agent = followup_targets_cached[-1] if followup_targets_cached else initial_agent
+                    # Get the agents attacked in the last timestep (to avoid attacking same agents consecutively)
+                    prev_attacked_agents = followup_targets_cached if followup_targets_cached else [initial_agent]
 
-                    # Use obs_predictor to select follow-up target
+                    # Use obs_predictor to select follow-up targets
                     followups = self.select_followup_target_continuous(
                         obs_fact=obs_tensor,
                         actions_fact=act_fact_onehot,
                         actions_cf=action_cf,
-                        prev_attacked_agent_idx=prev_attacked_agent,
-                    )  # [1,T]
-                    target_now = int(followups[0, -1].item())
-                    followup_targets_cached.append(target_now)
-                    do_actions[:, target_now] = copy.deepcopy(attacker_actions[:, target_now])
+                        prev_attacked_agents=prev_attacked_agents,
+                    )  # [1,T,num_followup_agents]
+                    targets_now = followups[0, -1, :].cpu().tolist()  # list of num_followup_agents indices
+                    followup_targets_cached = targets_now
+                    
+                    # Attack all selected followup targets
+                    for target_idx in targets_now:
+                        do_actions[:, target_idx] = copy.deepcopy(attacker_actions[:, target_idx])
                     attack_cnt += 1
                     last_attack_step = self.t
             else:
@@ -630,11 +636,13 @@ class EpisodeRunner:
             # record attack targets for learner logging
             # Format: initial_agent is [agent_id], followup_agents is list with num_followup_agents elements
             init_agent_store = [self.args.n_agents] if initial_agent is None else [initial_agent]
-            followup_store = [followup_targets_cached[-1]] if followup_targets_cached else [self.args.n_agents]
+            followup_store = followup_targets_cached if followup_targets_cached else [self.args.n_agents] * self.args.num_followup_agents
             
-            # Pad followup_agents to match num_followup_agents schema
-            while len(followup_store) < self.args.num_followup_agents:
-                followup_store.append(self.args.n_agents)
+            # Pad or truncate followup_agents to match num_followup_agents schema
+            if len(followup_store) < self.args.num_followup_agents:
+                followup_store = followup_store + [self.args.n_agents] * (self.args.num_followup_agents - len(followup_store))
+            elif len(followup_store) > self.args.num_followup_agents:
+                followup_store = followup_store[:self.args.num_followup_agents]
             
             self.batch.update({
                 "initial_agent": [init_agent_store],
@@ -686,489 +694,15 @@ class EpisodeRunner:
     def _log(self, returns, stats, prefix):
         self.logger.log_stat(prefix + "return_mean", np.mean(returns), self.t_env)
         self.logger.log_stat(prefix + "return_std", np.std(returns), self.t_env)
-        wandb.log({prefix + "return_mean": np.mean(returns)}, step=self.t_env)
-        wandb.log({prefix + "return_std": np.std(returns)}, step=self.t_env)
+        if self.args.use_wandb:
+            wandb.log({prefix + "return_mean": np.mean(returns)}, step=self.t_env)
+            wandb.log({prefix + "return_std": np.std(returns)}, step=self.t_env)
         returns.clear()
 
         for k, v in stats.items():
             if k != "n_episodes":
-                self.logger.log_stat(prefix + k + "_mean", v / stats["n_episodes"], self.t_env)
-                wandb.log({prefix + k + "_mean": v / stats["n_episodes"]}, step=self.t_env)
+                self.logger.log_stat(prefix + k + "_mean" , v/stats["n_episodes"], self.t_env)
+                if self.args.use_wandb:
+                    wandb.log({prefix + k + "_mean": v/stats["n_episodes"]}, step=self.t_env)
         stats.clear()
 
-    # -----------------------
-    # ODE 相关辅助方法
-    # -----------------------
-    def _one_hot_actions(self, actions_idx, n_actions):
-        # actions_idx: [B, T, N, 1] 或 [B, T, N]
-        if actions_idx.dim() == 4:
-            actions_idx = actions_idx.squeeze(-1)
-        assert actions_idx.dim() == 3, f"actions_idx expected [B,T,N,1], got {actions_idx.shape}"
-        B, T, N = actions_idx.shape
-        oh = F.one_hot(actions_idx.long(), num_classes=n_actions)  # [B,T,N,A]
-        return oh.float()
-
-    def _pad_left_time(self, x, target_T):
-        # x: [B, t, ...], 左侧补 0 到 target_T
-        B, t = x.shape[:2]
-        if t >= target_T:
-            return x[:, -target_T:]
-        pad_shape = list(x.shape)
-        pad_shape[1] = target_T - t
-        pad = th.zeros(pad_shape, device=x.device, dtype=x.dtype)
-        return th.cat([pad, x], dim=1)
-
-    def _build_history_nodes(self, batch, t, window_size):
-        """
-        构造历史窗口节点特征: [B, W, N, obs+n_actions]
-        - 历史 obs 用 batch["obs"]（到 t）。
-        - 历史动作优先用 actions_onehot；否则 forced_actions_onehot；
-        再不行用 actions/forced_actions 索引转 onehot；都没有时用 0 占位。
-        """
-        B = batch.batch_size
-        N = self.args.n_agents
-        A = self.args.n_actions
-
-        # ---- 历史obs ----
-        obs_all = batch["obs"]                 # [B, T+1, N, obs_dim]
-        t_obs = obs_all[:, :t+1]               # [B, t+1, N, obs_dim]
-
-        # ---- 历史动作（对齐到 :t）----
-        def one_hot_idx(idx_tensor):
-            # idx_tensor: [B, T, N, 1] 或 [B, T, N]
-            if idx_tensor.dim() == 4:
-                idx_tensor = idx_tensor.squeeze(-1)
-            oh = F.one_hot(idx_tensor.long(), num_classes=A)  # [B, T, N, A]
-            return oh.float()
-
-        t_act_oh = None
-        if hasattr(batch.data, "actions_onehot"):
-            ao = batch["actions_onehot"]      # [B, T, N, A] 或 [B, T+1, N, A]
-            t_act_oh = ao[:, :t] if ao.size(1) >= t else ao[:, :0]
-        elif hasattr(batch.data, "forced_actions_onehot"):
-            fao = batch["forced_actions_onehot"]
-            t_act_oh = fao[:, :t] if fao.size(1) >= t else fao[:, :0]
-        elif hasattr(batch.data, "actions"):
-            ai = batch["actions"]             # [B, T+1, N, 1]
-            t_act_oh = one_hot_idx(ai[:, :t]) # [B, t, N, A]
-        elif hasattr(batch.data, "forced_actions"):
-            fai = batch["forced_actions"]
-            t_act_oh = one_hot_idx(fai[:, :t])
-        else:
-            # 什么都没有（例如 t==0 或你在写入前就调用了该函数）——用 0 占位
-            t_act_oh = batch["obs"].new_zeros((B, 0, N, A))  # 空时间维
-
-        # ---- 左侧补0，长度对齐到 W ----
-        obs_hist = self._pad_left_time(t_obs, window_size)[:, -window_size:]       # [B, W, N, obs]
-        act_hist = self._pad_left_time(t_act_oh, window_size)[:, -window_size:]    # [B, W, N, A]
-
-        # ---- 断言检查 ----
-        assert obs_hist.shape[:3] == (B, window_size, N), \
-            f"obs_hist shape {tuple(obs_hist.shape)} != (B,W,N,obs)"
-        assert act_hist.shape[:3] == (B, window_size, N), \
-            f"act_hist shape {tuple(act_hist.shape)} != (B,W,N,A)"
-
-        # ---- 拼接 ----
-        node_in = th.cat([obs_hist, act_hist], dim=-1)  # [B, W, N, obs + A]
-        exp_feat = self.args.obs_shape + self.args.n_actions
-        assert node_in.shape[-1] == exp_feat, \
-            f"node_in feat={node_in.shape[-1]} != obs+n_actions({exp_feat})"
-
-        return node_in
-
-
-
-    def _encode_z0(self, node_history):
-        """用 GNN encoder 得 z0: [B,N,ode_hidden_dim]
-        node_history: [B, W, N, D]
-        """
-        from torch_geometric.data import Data, Batch as GeoBatch
-        
-        B, W, N, D = node_history.shape
-        device = node_history.device
-        
-        # 构建图数据（参考 load_data_covid.py:transfer_one_graph）
-        graph_list = []
-        for b in range(B):
-            # 1. 展平时间维度
-            x = node_history[b].reshape(W * N, D)  # [W*N, D]
-            
-            # 2. 时间位置编码
-            pos = th.cat([th.full((N,), t / W, device=device) for t in range(W)])  # [W*N]
-            
-            # 3. 构建全连接边索引（每个时间步内 + 跨时间）
-            edge_list = []
-            edge_weights = []
-            edge_times = []
-            
-            for t in range(W):
-                offset = t * N
-                for i in range(N):
-                    for j in range(N):
-                        # 同一时间步内的边
-                        edge_list.append([offset + i, offset + j])
-                        edge_weights.append(1.0 / N)
-                        edge_times.append(0.0)
-                        
-                        # 跨时间边（t -> t-1）
-                        if t > 0:
-                            prev_offset = (t - 1) * N
-                            edge_list.append([offset + i, prev_offset + j])
-                            edge_weights.append(0.5 / N)
-                            edge_times.append(-1.0 / W)
-            
-            edge_index = th.tensor(edge_list, dtype=th.long).t().to(device)
-            edge_weight = th.tensor(edge_weights, dtype=th.float, device=device)
-            edge_time = th.tensor(edge_times, dtype=th.float, device=device)
-            
-            # 4. y：每个 agent 有 W 个观测
-            y = th.full((N,), W, dtype=th.long, device=device)
-            
-            graph_data = Data(
-                x=x,
-                edge_index=edge_index,
-                edge_weight=edge_weight,
-                edge_time=edge_time,
-                pos=pos,
-                y=y
-            )
-            graph_list.append(graph_data)
-        
-        # 5. 合并成 Batch
-        batch_geo = GeoBatch.from_data_list(graph_list)
-        
-        # 6. 调用 encoder（传入完整参数）
-        z0_mu, z0_std = self.timeseries_ode_model.encoder_z0(
-            batch_geo.x,         # [B*W*N, D]
-            batch_geo.edge_weight,
-            batch_geo.edge_index,
-            batch_geo.pos,       # [B*W*N]
-            batch_geo.edge_time,
-            batch_geo.batch,     # PyG 自动生成的 batch 索引
-            batch_geo.y          # [B*N]，每个 agent 的时间步数
-        )
-        
-        # 7. 重塑回 [B, N, ode_hidden_dim]
-        H = self.args.ode_dims
-        assert z0_mu.shape == (B * N, H), f"encoder output shape {z0_mu.shape} != [{B*N}, {H}]"
-        z0_mu = z0_mu.reshape(B, N, H)
-        z0_std = z0_std.reshape(B, N, H)
-        
-        # 简单用 mean（可改成 reparameterize）
-        z0 = z0_mu
-        return z0
-
-    def _ode_rollout_edges(self, z0, horizon, treatment=None):
-        """从 z0 rollout 未来 H 步的边权: 返回 [B,H,N,N]"""
-        assert hasattr(self, "timeseries_ode_model"), "timeseries_ode_model not set"
-        model = self.timeseries_ode_model
-
-        B, N, Hdim = z0.shape
-        assert Hdim == self.args.ode_dims, f"z0 hidden {Hdim} != ode_dims {self.args.ode_dims}"
-
-        # 时间轴：归一化到 [0, 1]
-        time_steps = th.linspace(0, 1, horizon, device=z0.device)  # [H]
-
-        # treatment: [B,H,N,t_dim]
-        tdim = getattr(self.args, "t_dim", 1)
-        if treatment is None:
-            treatment = th.zeros(B, horizon, N, tdim, device=z0.device)
-
-        # 将 treatment 转置：[B,H,N,t_dim] -> [N,H,t_dim]（只用第一个batch）
-        treatment_for_solver_shape = treatment[0].permute(1, 0, 2)  # [N, H, t_dim]
-        
-        # 扩展到 max_T（用0填充）
-        max_T = getattr(self.args, 'episode_limit', 100)
-        treatment_for_solver = th.zeros(N, max_T, tdim, device=z0.device)
-        treatment_for_solver[:, :horizon, :] = treatment_for_solver_shape
-        
-        # 设置 treatment 到 ODE solver（必须在 set_index_and_graph 之前）
-        model.set_treatments(treatment_for_solver)
-        
-        # 关键新增：设置 policy_starting_ending_points
-        # 假设每个 agent 的 policy 从时间 0 开始，到 max_T 结束
-        # [N, t_dim, 2]：对于每个 agent 的每个 treatment 维度，记录 [start, end]
-        policy_starting_ending_points = th.zeros(N, tdim, 2, device=z0.device)
-        policy_starting_ending_points[:, :, 0] = 0          # 开始时间
-        policy_starting_ending_points[:, :, 1] = max_T - 1  # 结束时间
-        model.set_policy_starting_ending_points(policy_starting_ending_points)
-        
-        # z0: [B,N,Hdim] -> [B*N,Hdim]
-        z0_flat = z0.reshape(B * N, Hdim)
-        
-        # time_absolute: [B*N,H]
-        time_absolute = th.arange(horizon, device=z0.device, dtype=th.float).unsqueeze(0).repeat(B * N, 1)
-        
-        # 设置索引
-        K_N = B * N
-        K = B
-        model.diffeq_solver.ode_func.set_index_and_graph(K_N, K, time_steps)
-        
-        # 设置 t_treatments
-        model.diffeq_solver.ode_func.set_t_treatments(time_absolute)
-        
-        # 调用 solver
-        try:
-            sol_y, K_N, treatment_rep = model.diffeq_solver(
-                first_point=z0_flat,
-                time_steps_to_predict=time_steps,
-                times_absolute=time_absolute,
-                w_node_to_edge_initial=model.w_node_to_edge_initial
-            )
-            
-            # 提取边的轨迹
-            edge_latent = sol_y[K_N:, :, :]  # [K*N*N, H, D]
-            
-            # 通过 decoder 解码
-            pred_edge = model.decoder_edge(edge_latent)  # [K*N*N, H, 1]
-            
-            # 重塑为 [B, H, N, N]
-            pred_edge = pred_edge.squeeze(-1)  # [K*N*N, H]
-            pred_edge = pred_edge.reshape(B, N, N, horizon)  # [B, N, N, H]
-            pred_edge = pred_edge.permute(0, 3, 1, 2)  # [B, H, N, N]
-            
-        except Exception as e:
-            print(f"[ERROR] ODE rollout failed: {e}")
-            print(f"  z0 shape: {z0.shape}")
-            print(f"  treatment shape: {treatment.shape}")
-            print(f"  treatment_for_solver shape: {treatment_for_solver.shape}")
-            raise e
-        
-        # 去掉自环
-        eye = th.eye(N, device=pred_edge.device).view(1, 1, N, N)
-        pred_edge = pred_edge * (1.0 - eye)
-        
-        return pred_edge  # [B,H,N,N]
-
-    def _select_initial_by_total_outgoing(self, edges_future):
-        """在 H 步窗口内按出边和累加选择 initial agent"""
-        # edges_future: [B,H,N,N]
-        B, H, N, _ = edges_future.shape
-        outgoing = edges_future.sum(dim=-1).sum(dim=1)  # [B,N], sum over j and time
-        scores, idx = th.max(outgoing, dim=-1)  # [B]
-        return idx, scores, outgoing  # 均是 [B]
-
-    def _inject_initial_treatment(self, B, H, N, initial_idx):
-        """构造干预: 对 initial agent 在整个未来窗口置 1（t_dim=1）"""
-        tdim = getattr(self.args, "t_dim", 1)
-        assert tdim == 1, "建议 t_dim=1；否则在这里构建 one-hot/multi-dim 干预"
-        treatment = th.zeros(B, H, N, tdim, device=self.batch.device)
-        for b in range(B):
-            i = int(initial_idx[b].item())
-            treatment[b, :, i, 0] = 1.0
-        return treatment  # [B,H,N,1]
-
-    def _select_followup_each_step(self, edges_future_with_attack, initial_idx, num_steps):
-        """
-        按 time step 选出边权最大的 **2 个 agent** 作为 follow-up（每步选 2 个）
-        edges_future_with_attack: [B, H, N, N]
-        initial_idx: [B]
-        num_steps: 选择的时间步数（attack_duration）
-        返回: [B, num_steps, 2] - 每个时间步 2 个 agent ID
-        """
-        B, H, N, _ = edges_future_with_attack.shape
-        outgoing_t = edges_future_with_attack.sum(dim=-1)  # [B, H, N] - 每个时刻每个节点的出边和
-        followups = []
-        
-        for t in range(min(H, num_steps)):
-            scores = outgoing_t[:, t, :]  # [B, N]
-            
-            # Mask initial agent（排除自己）
-            for b in range(B):
-                scores[b, int(initial_idx[b])] = -1e9
-            
-            # 选择 top-2
-            top2_idx = th.topk(scores, k=2, dim=-1).indices  # [B, 2]
-            followups.append(top2_idx)
-        
-        # 如果 num_steps > H，用最后一步的 top-2 填充
-        if len(followups) < num_steps:
-            last_followup = followups[-1] if followups else th.full((B, 2), initial_idx[0].item(), device=edges_future_with_attack.device)
-            for _ in range(num_steps - len(followups)):
-                followups.append(last_followup)
-        
-        followups = th.stack(followups, dim=1)  # [B, num_steps, 2]
-        return followups
-
-    # ============================================================
-    # ODE：initial + follow-up 的攻击器（使用 H = args.trans_input_len）
-    # ============================================================
-    def run_timeseries_attacker(self, test_mode=False):
-        """
-        用 ODE 模型选择 initial 和 follow-up 攻击目标
-        ✅ 新增：最小攻击间隔控制
-        """
-        self.reset()
-        terminated = False
-        episode_return = 0
-        self.mac.init_hidden(batch_size=self.batch_size)
-
-        # 统计
-        do_attack_num = 0
-        attack_cnt = 0
-        initial_attack_flag = copy.deepcopy(self.args.attack_duration)  # 倒计时
-        pre_initial_attack_step = 0
-
-        # ✅ 新增：攻击间隔控制
-        attack_period = getattr(self.args, 'attack_period', 10)  # 默认 10 步间隔
-        last_attack_step = -attack_period  # 初始化为可以立即攻击
-
-        # 初始化攻击目标（非法 ID）
-        initial_agent = [self.args.n_agents]
-        dynamic_followup_agents = [self.args.n_agents, self.args.n_agents]
-        dynamic_followup_agents_full = [[self.args.n_agents, self.args.n_agents]] * self.args.attack_duration
-
-        H = self.args.trans_input_len  # ODE 预测窗口
-        max_attacks = getattr(self.args, 'num_attack_test', 10) if test_mode else getattr(self.args, 'num_attack_train', 10)
-
-        while not terminated:
-            # 1) 收集环境数据
-            pre_transition_data = {
-                "state": [self.env.get_state()],
-                "avail_actions": [self.env.get_avail_actions()],
-                "obs": [self.env.get_obs()],
-            }
-            self.batch.update(pre_transition_data, ts=self.t)
-
-            ori_actions, chosen_actions, random_actions, attacker_actions = self.mac.select_actions_wolfpack(
-                self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode
-            )
-            hidden_states = self.mac.return_hidden()
-
-            middle_transition_data = {
-                "actions": ori_actions.to("cpu").numpy(),
-                "attacker_actions": attacker_actions.to("cpu").numpy(),
-                "hidden_states": hidden_states,
-            }
-            self.batch.update(middle_transition_data, ts=self.t)
-
-            # 2) 攻击逻辑
-            do_actions = copy.deepcopy(ori_actions)
-
-            # ✅ 修复1: 只在满足间隔要求且攻击周期开始时选择目标
-            can_attack = (self.t - last_attack_step >= attack_period)  # 是否满足最小间隔
-            
-            if initial_attack_flag == self.args.attack_duration and attack_cnt < max_attacks and can_attack:
-                # 2.1 构造历史窗口
-                node_hist = self._build_history_nodes(batch=self.batch, t=self.t, window_size=H)
-                node_hist = node_hist.to(self.args.device)
-                z0 = self._encode_z0(node_hist)
-
-                # 2.2 rollout 无干预的边权
-                edges_future_base = self._ode_rollout_edges(z0, H, treatment=None)
-
-                # 2.3 选择 initial agent
-                initial_idx, _, _ = self._select_initial_by_total_outgoing(edges_future_base)
-                initial_agent = [int(initial_idx[0].item())]
-
-                # 2.4 注入干预，重新 rollout
-                treatment_init = self._inject_initial_treatment(
-                    B=self.batch.batch_size,
-                    H=H,
-                    N=self.args.n_agents,
-                    initial_idx=initial_idx
-                )
-                edges_future_attack = self._ode_rollout_edges(z0, H, treatment=treatment_init)
-
-                # 2.5 选择 follow-up agents（每步 2 个）
-                followup_idx_seq = self._select_followup_each_step(
-                    edges_future_attack, initial_idx, num_steps=self.args.attack_duration
-                )  # [B, attack_duration, 2]
-
-                # 2.6 构造完整攻击序列
-                dynamic_followup_agents_full = []
-                for k in range(followup_idx_seq.shape[1]):
-                    step_agents = [
-                        int(followup_idx_seq[0, k, 0].item()),
-                        int(followup_idx_seq[0, k, 1].item())
-                    ]
-                    dynamic_followup_agents_full.append(step_agents)
-                
-                dynamic_followup_agents = dynamic_followup_agents_full[0]  # 记录第一步（供 Scheme）
-
-                # ✅ 修复2: 执行 initial 攻击并更新状态
-                do_actions[:, initial_agent[0]] = copy.deepcopy(attacker_actions[:, initial_agent[0]])
-                initial_attack_flag -= 1
-                attack_cnt += 1
-                pre_initial_attack_step = self.t
-                last_attack_step = self.t  # ← 更新最后攻击时间
-
-            elif initial_attack_flag > 0 and attack_cnt < max_attacks:
-                # ✅ 修复3: Follow-up 阶段
-                step_offset = self.args.attack_duration - initial_attack_flag
-                
-                if 0 <= step_offset < len(dynamic_followup_agents_full):
-                    followup_pair = dynamic_followup_agents_full[step_offset]
-                    for f_id in followup_pair:
-                        if f_id < self.args.n_agents:
-                            do_actions[:, f_id] = copy.deepcopy(attacker_actions[:, f_id])
-            
-                initial_attack_flag -= 1
-                attack_cnt += 1
-                last_attack_step = self.t  # ← 更新最后攻击时间
-
-            elif initial_attack_flag == 0:
-                # ✅ 修复4: 攻击周期结束，重置
-                initial_attack_flag = self.args.attack_duration
-                initial_agent = [self.args.n_agents]
-                dynamic_followup_agents_full = [[self.args.n_agents, self.args.n_agents]] * self.args.attack_duration
-                dynamic_followup_agents = [self.args.n_agents, self.args.n_agents]
-                # ⚠️ 注意：不更新 last_attack_step，保持间隔控制
-
-            # 3) 统计实际攻击次数
-            if not ori_actions.equal(do_actions):
-                do_attack_num += 1
-
-            # 4) 与环境交互
-            reward, terminated, env_info = self.env.step(do_actions[0])
-            episode_return += reward
-
-            post_transition_data = {
-                "actions": ori_actions.to("cpu").numpy(),
-                "forced_actions": do_actions.to("cpu").numpy(),
-                "reward": [(reward,)],
-                "terminated": [(terminated != env_info.get("episode_limit", False),)]
-            }
-            self.batch.update(post_transition_data, ts=self.t)
-
-            # 记录攻击目标
-            last_transition_data = {
-                "initial_agent": [initial_agent],
-                "followup_agents": [dynamic_followup_agents],
-            }
-            self.batch.update(last_transition_data, ts=self.t)
-
-            self.t += 1
-
-        # 收尾
-        last_data = {
-            "state": [self.env.get_state()],
-            "avail_actions": [self.env.get_avail_actions()],
-            "obs": [self.env.get_obs()],
-        }
-        self.batch.update(last_data, ts=self.t)
-
-        ori_actions, chosen_actions, random_actions, attacker_actions = self.mac.select_actions_wolfpack(
-            self.batch, t_ep=self.t, t_env=self.t_env, test_mode=test_mode
-        )
-        self.batch.update({"actions": ori_actions.to("cpu").numpy()}, ts=self.t)
-        self.batch.update({"forced_actions": ori_actions.to("cpu").numpy()}, ts=self.t)
-
-        # 日志
-        cur_stats = self.test_wolfpack_stats if test_mode else self.wolfpack_stats
-        cur_returns = self.test_wolfpack_returns if test_mode else self.wolfpack_returns
-        log_prefix = "test_ODE_Timeseries_" if test_mode else "ODE_Timeseries_"
-        cur_stats.update({k: cur_stats.get(k, 0) + env_info.get(k, 0) for k in set(cur_stats) | set(env_info)})
-        cur_stats["n_episodes"] = 1 + cur_stats.get("n_episodes", 0)
-        cur_stats["ep_length"] = self.t + cur_stats.get("ep_length", 0)
-        if not test_mode:
-            self.t_env += self.t
-        cur_returns.append(episode_return)
-        self._log(cur_returns, cur_stats, log_prefix)
-
-        if test_mode:
-            wandb.log({"test_ode_timeseries_attack_num": do_attack_num}, step=self.t_env)
-        else:
-            wandb.log({"ode_timeseries_attack_num": do_attack_num}, step=self.t_env)
-
-        return self.batch

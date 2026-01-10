@@ -21,7 +21,6 @@ import logging
 
 from modules.step.models import Qdifference_Transformer
 from modules.step.models import Planning_Transformer
-#from lib.create_coupled_ode_model import create_CoupledODE_model
 from modules.step.models import ObsPredictorMLP
 def run(_run, _config, _log):
     logging.getLogger("requests").setLevel(logging.WARNING)
@@ -53,17 +52,16 @@ def run(_run, _config, _log):
         wandb_logs_direc = os.path.join(dirname(dirname(dirname(abspath(__file__)))), "results", "wandb")
         wandb_exp_direc = os.path.join(wandb_logs_direc, "{}").format(unique_token)
 
-        key="e7c36d31e540508a93cca1002db447753392c643"
+        key=""    # key
         wandb.login(key=key)
         run = wandb.init(config=args,
-                        project='MARL_SW',
-                        #entity='mlic_academic',
+                        project='',
+                        entity='',
                         notes=socket.gethostname(),
-                        name="test",
-                        group='robust',
+                        name="",
+                        group='',
                         dir=str(wandb_exp_direc),
-                        job_type="training",
-                        #mode="disabled", # offline, online, disabled
+                        job_type="",
                         reinit=True)
 
     # sacred is on by default
@@ -98,6 +96,16 @@ def evaluate_sequential(args, runner):
 
     runner.close_env()
 
+def evaluate_sequential_wolfpack(args, runner):
+
+    for _ in range(args.test_nepisode):
+        runner.run_wolfpack_attacker(test_mode=True)
+
+    if args.save_replay:
+        runner.save_replay()
+
+    runner.close_env()
+    
 def run_sequential(args, logger):
 
     # Init runner so we can get env info
@@ -110,7 +118,7 @@ def run_sequential(args, logger):
     args.state_shape = env_info["state_shape"]
     args.obs_shape = env_info["obs_shape"]
 
-    # Default/Base scheme
+       
     scheme = {
         "state": {"vshape": env_info["state_shape"]},
         "obs": {"vshape": env_info["obs_shape"], "group": "agents"},
@@ -140,57 +148,33 @@ def run_sequential(args, logger):
     # Setup multiagent controller here
     mac = mac_REGISTRY[args.mac](buffer.scheme, groups, args)
 
-    # Conditional initialization based on learner type
-    if args.learner == "ode_q_learner":
-        # For ODE learner, create dummy transformers or None
-        qdifference_transformer = None
-        planning_transformer = None
-        #timeseries_ode_model = create_CoupledODE_model(args)
-        print("Using ODE models - skipping transformer initialization")
-    elif args.learner == "Causal_q_learner":
-        # For regular learners, create actual transformers
-        qdifference_transformer = Qdifference_Transformer(args)
-        planning_transformer = Planning_Transformer(args)
-        timeseries_ode_model=None
-        obs_predictor = ObsPredictorMLP(args)
-        print("Using Causal models")
-    elif args.learner == "WALL_q_learner":
-        # For regular learners, create actual transformers
-        qdifference_transformer = Qdifference_Transformer(args)
-        planning_transformer = Planning_Transformer(args)
-        timeseries_ode_model=None
-        obs_predictor = ObsPredictorMLP(args)
-        print("Using WALL transformer models")
-    elif args.learner == "q_learner":
-        qdifference_transformer = None
-        planning_transformer = None
-        timeseries_ode_model=None
-        obs_predictor = None
-        print("Using regular QLearner - skipping transformer initialization")
-    else:
-        raise ValueError("Learner {} not recognised.".format(args.learner))
-    # Give runner the scheme
-    runner.setup(scheme=scheme, groups=groups, preprocess=preprocess, mac=mac, qdifference_transformer=qdifference_transformer, planning_transformer=planning_transformer,timeseries_ode_model=timeseries_ode_model,obs_predictor=obs_predictor)
 
-    # Learner initialization with different signatures based on type
-    if args.learner == "ode_q_learner":
-        # ODEQLearner only needs mac, scheme, logger, args
-        learner = le_REGISTRY[args.learner](mac, buffer.scheme, logger, args,timeseries_ode_model)
-    elif args.learner == "WALL_q_learner":
-        # Regular learners need transformers
+
+    # Learner
+    if args.learner == "WALL_q_learner":
+        qdifference_transformer = Qdifference_Transformer(args)
+        planning_transformer = Planning_Transformer(args)
+        runner.setup(scheme=scheme, groups=groups, preprocess=preprocess, mac=mac, qdifference_transformer=qdifference_transformer, planning_transformer=planning_transformer,obs_predictor=None)
         learner = le_REGISTRY[args.learner](mac, buffer.scheme, logger, args, qdifference_transformer, planning_transformer)
-    elif args.learner == "Causal_q_learner":
-        # Regular learners need transformers
-        learner = le_REGISTRY[args.learner](mac, buffer.scheme, logger, args, qdifference_transformer, planning_transformer,obs_predictor)
     elif args.learner == "q_learner":
+        qdifference_transformer = None
+        planning_transformer = None
+        runner.setup(scheme=scheme, groups=groups, preprocess=preprocess, mac=mac, qdifference_transformer=qdifference_transformer, planning_transformer=planning_transformer,obs_predictor=None)
+
         learner = le_REGISTRY[args.learner](mac, buffer.scheme, logger, args)
+    elif args.learner == "Causal_q_learner":
+        qdifference_transformer = Qdifference_Transformer(args)
+        planning_transformer = Planning_Transformer(args)
+        ObsPredictor = ObsPredictorMLP(args)
+        runner.setup(scheme=scheme, groups=groups, preprocess=preprocess, mac=mac, qdifference_transformer=qdifference_transformer, planning_transformer=planning_transformer,obs_predictor=ObsPredictor)
+        learner = le_REGISTRY[args.learner](mac, buffer.scheme, logger, args, qdifference_transformer, planning_transformer,ObsPredictor)
     if args.use_cuda:
         learner.cuda()
 
-    # if args.pretrain == True:
-    #     model_path = f"pretrain_model/{args.name}/" + args.env_args["map_name"]
-    #     learner.load_models(model_path)
-    #     print("pretrain")
+    if args.pretrain == True:
+        model_path = f"pretrain_model/{args.name}/" + args.env_args["map_name"]
+        learner.load_models(model_path)
+        print("pretrain")
 
     runner.setup_mac_for_attack(mac)
     runner.setup_learner(learner)
@@ -220,11 +204,15 @@ def run_sequential(args, logger):
         model_path = os.path.join(args.checkpoint_path, str(timestep_to_load))
 
         logger.console_logger.info("Loading model from {}".format(model_path))
+        
         learner.load_models(model_path)
+        learner.load_attackers(model_path)
+        
         runner.t_env = timestep_to_load
 
         if args.evaluate or args.save_replay:
             evaluate_sequential(args, runner)
+            evaluate_sequential_wolfpack(args, runner)
             return
 
     # start training
@@ -239,21 +227,15 @@ def run_sequential(args, logger):
     logger.console_logger.info("Beginning training for {} timesteps".format(args.t_max))
 
     while runner.t_env <= args.t_max:
-        # 根据 learner 类型选择收集数据的方式
-        if args.learner == "WALL_q_learner":
-            # WALL 模型需要攻击场景训练
-            episode_batch = runner.run_wolfpack_attacker(test_mode=False)
-        if args.learner == "Causal_q_learner":
-            # WALL 模型需要攻击场景训练
-            episode_batch = runner.run_continuous_attack(test_mode=False)            
-        elif args.learner == "ode_q_learner":
-            # 标准 MARL 模型在正常环境训练
-            episode_batch = runner.run_timeseries_attacker(test_mode=False)
-        elif args.learner == "q_learner":
+
+        # Run for a whole episode at a time
+        if args.learner == "q_learner":
             episode_batch = runner.run(test_mode=False)
-        else:
-            raise ValueError(f"Unknown learner: {args.learner}")
-        
+        elif args.learner == "WALL_q_learner":
+            episode_batch = runner.run_wolfpack_attacker(test_mode=False)
+        elif args.learner == "Causal_q_learner":
+            episode_batch = runner.run_continuous_attack(test_mode=False)
+
         buffer.insert_episode_batch(episode_batch)
 
         if buffer.can_sample(args.batch_size):
@@ -280,19 +262,15 @@ def run_sequential(args, logger):
             last_test_T = runner.t_env
             for _ in range(n_test_runs):
                 if args.learner == "WALL_q_learner":
-                    # WALL 模型需要攻击场景训练
-                    episode_batch = runner.run_wolfpack_attacker(test_mode=False)
-                if args.learner == "Causal_q_learner":
-                    # WALL 模型需要攻击场景训练
-                    episode_batch = runner.run_continuous_attack(test_mode=False)
-                    episode_batch = runner.run_wolfpack_attacker(test_mode=False)            
-                elif args.learner == "ode_q_learner":
-                    # 标准 MARL 模型在正常环境训练
-                    episode_batch = runner.run_timeseries_attacker(test_mode=False)
+                    runner.run(test_mode=True)
+                    runner.run_wolfpack_attacker(test_mode=True)
                 elif args.learner == "q_learner":
-                    episode_batch = runner.run(test_mode=False)
-                else:
-                    raise ValueError(f"Unknown learner: {args.learner}")
+                    runner.run(test_mode=True)
+                elif args.learner == "Causal_q_learner":
+                    runner.run(test_mode=True)
+                    runner.run_wolfpack_attacker(test_mode=True)
+                    runner.run_continuous_attack(test_mode=True)
+
         if args.save_model and (runner.t_env - model_save_time >= args.save_model_interval or model_save_time == 0):
             model_save_time = runner.t_env
             save_path = os.path.join(args.local_results_path, "models", args.unique_token, str(runner.t_env))
@@ -307,7 +285,8 @@ def run_sequential(args, logger):
 
         if (runner.t_env - last_log_T) >= args.log_interval:
             logger.log_stat("episode", episode, runner.t_env)
-            wandb.log({"episode": episode}, step=runner.t_env)
+            if args.use_wandb:
+                wandb.log({"episode": episode}, step=runner.t_env)
             logger.print_recent_stats()
             last_log_T = runner.t_env
 
@@ -321,11 +300,11 @@ def args_sanity_check(config, _log):
     # config["use_cuda"] = True # Use cuda whenever possible!
     if config["use_cuda"] and not th.cuda.is_available():
         config["use_cuda"] = False
-        _log.warning("CUDA flag use_cuda was switched OFF automatically because no CUDA devices are available!")    
-        return config
+        _log.warning("CUDA flag use_cuda was switched OFF automatically because no CUDA devices are available!")
 
     if config["test_nepisode"] < config["batch_size_run"]:
         config["test_nepisode"] = config["batch_size_run"]
     else:
         config["test_nepisode"] = (config["test_nepisode"]//config["batch_size_run"]) * config["batch_size_run"]
+
     return config

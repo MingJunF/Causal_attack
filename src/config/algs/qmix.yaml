@@ -21,5 +21,7 @@ mixer: "qmix"
 mixing_embed_dim: 32
 hypernet_layers: 2
 hypernet_embed: 64
-num_followup_agents: 1
+num_followup_agents: 2
+pretrain: False
+
 name: "qmix"

@@ -25,7 +25,7 @@ hypernet_embed: 64
 name: "qmix"
 
 # --- Wolfpack attack ---
-
+pretrain: True
 followup_l2: False
 init_agent_random: True
 init_attack_step_method: "planner"

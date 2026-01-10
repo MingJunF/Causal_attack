@@ -2,7 +2,7 @@
   "artifacts": [],
   "command": "my_main",
   "experiment": {
-    "base_dir": "/mnt/d/Github_Code/uncertainty/Causal_attack/src",
+    "base_dir": "/mnt/d/Github_Code/uncertainty/WALL/src",
     "dependencies": [
       "numpy==2.2.6",
       "pyyaml==5.3.1",
@@ -13,29 +13,29 @@
     "name": "pymarl",
     "repositories": [
       {
-        "commit": "335475d0c8ea48dc19b4ab7446c6d9768d574356",
+        "commit": "cb49465f79a35cfd6ef6f410a926413a786e0d03",
         "dirty": true,
-        "url": "https://github.com/MingJunF/Causal_attack.git"
+        "url": "https://github.com/sunwoolee0504/WALL.git"
       },
       {
-        "commit": "335475d0c8ea48dc19b4ab7446c6d9768d574356",
+        "commit": "cb49465f79a35cfd6ef6f410a926413a786e0d03",
         "dirty": true,
-        "url": "https://github.com/MingJunF/Causal_attack.git"
+        "url": "https://github.com/sunwoolee0504/WALL.git"
       },
       {
-        "commit": "335475d0c8ea48dc19b4ab7446c6d9768d574356",
+        "commit": "cb49465f79a35cfd6ef6f410a926413a786e0d03",
         "dirty": true,
-        "url": "https://github.com/MingJunF/Causal_attack.git"
+        "url": "https://github.com/sunwoolee0504/WALL.git"
       }
     ],
     "sources": [
       [
         "main.py",
-        "_sources/main_9b66c6875edac7aa1e100ffe71493799.py"
+        "_sources/main_4ccf838b111e7f5ebd1fe3e81b3cb83d.py"
       ],
       [
         "run.py",
-        "_sources/run_a282d792e481c95e0a34baeef3ce86e5.py"
+        "_sources/run_8eb84c9a475d4b22e3369bc7a30b119d.py"
       ],
       [
         "utils/logging.py",
@@ -43,7 +43,15 @@
       ]
     ]
   },
-  "heartbeat": "2026-01-10T04:45:14.887643",
+  "fail_trace": [
+    "Traceback (most recent call last):\n",
+    "  File \"/home/mingjun/miniconda3/envs/pymarl/lib/python3.10/site-packages/sacred/config/captured_function.py\", line 42, in captured_function\n    result = wrapped(*args, **kwargs)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/main.py\", line 35, in my_main\n    run(_run, config, _log)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/run.py\", line 71, in run\n    run_sequential(args=args, logger=logger)\n",
+    "  File \"/mnt/d/Github_Code/uncertainty/WALL/src/run.py\", line 127, in run_sequential\n    \"followup_agents\": {\"vshape\": args.num_followup_agents, \"dtype\": th.long}, # selected_agents_next\n",
+    "AttributeError: 'types.SimpleNamespace' object has no attribute 'num_followup_agents'\n"
+  ],
+  "heartbeat": "2026-01-10T05:45:04.646247",
   "host": {
     "ENV": {},
     "cpu": "AMD Ryzen 7 7800X3D 8-Core Processor",
@@ -103,6 +111,7 @@
   },
   "resources": [],
   "result": null,
-  "start_time": "2026-01-10T04:27:19.525461",
-  "status": "RUNNING"
+  "start_time": "2026-01-10T05:45:00.261591",
+  "status": "FAILED",
+  "stop_time": "2026-01-10T05:45:04.660879"
 }

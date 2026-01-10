@@ -240,16 +240,6 @@ class ReplayBuffer(EpisodeBatch):
             ep_ids = np.random.choice(self.episodes_in_buffer, batch_size, replace=False)
             return self[ep_ids]
 
-    def _get_info_item(self, key, info_item):
-        v = info_item.data
-        if isinstance(v, th.Tensor):
-            v = v.to(dtype=self.scheme[key].dtype, device=self.device)
-        else:
-            import numpy as np
-            v = th.as_tensor(np.asarray(v), dtype=self.scheme[key].dtype, device=self.device)
-        
-        return v.unsqueeze(0)
-
     def __repr__(self):
         return "ReplayBuffer. {}/{} episodes. Keys:{} Groups:{}".format(self.episodes_in_buffer,
                                                                         self.buffer_size,

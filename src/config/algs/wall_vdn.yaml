@@ -15,14 +15,14 @@ target_update_interval: 200
 
 # use the Q_Learner to train
 agent_output_type: "q"
-learner: "WALL_q_learner"
+learner: "q_learner"
 double_q: True
 mixer: "vdn"
 
 name: "vdn"
 
 # --- Wolfpack attack ---
-
+pretrain: True
 followup_l2: False
 init_agent_random: True
 init_attack_step_method: "planner"
