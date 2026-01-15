@@ -3,6 +3,7 @@
 # =========================
 
 # Third-party code / submodules
+src/_pycache__/
 3rdparty/
 3rdparty/**
 __MACOSX/
