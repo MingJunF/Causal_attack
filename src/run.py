@@ -44,7 +44,9 @@ def run(_run, _config, _log):
     _log.info("\n\n" + experiment_params + "\n")
 
     # configure tensorboard logger
-    unique_token = "{}__{}".format(args.name, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+    # Get map name from environment arguments
+    map_name = args.env_args.get("map_name", "unknown_map")
+    unique_token = "{}_{}_{}_".format(args.name, map_name, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     args.unique_token = unique_token
     if args.use_tensorboard:
         tb_logs_direc = os.path.join(dirname(dirname(abspath(__file__))), "results", "tb_logs")
@@ -57,8 +59,6 @@ def run(_run, _config, _log):
         key=""    # key
         wandb.login(key=key)
         
-        # Get map name from environment arguments
-        map_name = args.env_args.get("map_name", "unknown_map")
         # Get algorithm name from config
         alg_name = args.name
         
