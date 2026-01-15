@@ -18,13 +18,20 @@ This will download SC2 into the 3rdparty folder and copy the maps necessary to r
 The requirements.txt file can be used to install the necessary packages into a virtual environment.
 
 ## Run an WALL experiment
-
 QMIX
 ```shell
 python3 src/main.py --config=wall_qmix --env-config=sc2 with env_args.map_name=2s3z num_attack_test=8 num_attack_train=12 num_followup_agents=2 pretrain=True 
 ```
+8m
+python3 src/main.py --config=Continous --env-config=sc2 with env_args.map_name=8m num_attack_test=4 num_attack_train=8 num_followup_agents=3 pretrain=True 
+
+3m
+
+python3 src/main.py --config=wall_qmix --env-config=sc2 with env_args.map_name=8m num_attack_test=4 num_attack_train=8 num_followup_agents=3 pretrain=True 
+python3 src/main.py --config=continous --env-config=sc2 with env_args.map_name=2s3z num_attack_test=8 num_attack_train=12 num_followup_agents=2 pretrain=False 
 VDN
 ```shell
+
 python3 src/main.py --config=wall_vdn --env-config=sc2 with env_args.map_name=2s3z num_attack_test=8 num_attack_train=12 num_followup_agents=2 pretrain=True 
 ```
 QPLEX

@@ -22,6 +22,8 @@ import logging
 from modules.step.models import Qdifference_Transformer
 from modules.step.models import Planning_Transformer
 from modules.step.models import ObsPredictorMLP
+
+
 def run(_run, _config, _log):
     logging.getLogger("requests").setLevel(logging.WARNING)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -54,14 +56,21 @@ def run(_run, _config, _log):
 
         key=""    # key
         wandb.login(key=key)
+        
+        # Get map name from environment arguments
+        map_name = args.env_args.get("map_name", "unknown_map")
+        # Get algorithm name from config
+        alg_name = args.name
+        
         run = wandb.init(config=args,
-                        project='',
+                        project=map_name,
                         entity='',
                         notes=socket.gethostname(),
-                        name="",
+                        name=alg_name,
                         group='',
                         dir=str(wandb_exp_direc),
                         job_type="",
+                        #mode="disabled",
                         reinit=True)
 
     # sacred is on by default
@@ -103,6 +112,22 @@ def evaluate_sequential_wolfpack(args, runner):
 
     if args.save_replay:
         runner.save_replay()
+    runner.close_env()
+def evaluate_random(args, runner):
+
+    for _ in range(args.test_nepisode):
+        runner.run_randomattack(test_mode=True)
+
+    if args.save_replay:
+        runner.save_replay()
+    runner.close_env()
+def evaluate_sequential_continuous(args, runner):
+    """Evaluate continuous attack for Causal_q_learner."""
+    for _ in range(args.test_nepisode):
+        runner.run_continuous_attack(test_mode=True)
+
+    if args.save_replay:
+        runner.save_replay()
 
     runner.close_env()
     
@@ -118,13 +143,18 @@ def run_sequential(args, logger):
     args.state_shape = env_info["state_shape"]
     args.obs_shape = env_info["obs_shape"]
 
+    # Use max of num_followup_agents and num_followup_agents_wall for scheme
+    max_followup_agents = max(
+        getattr(args, 'num_followup_agents', 1),
+        getattr(args, 'num_followup_agents_wall', 1)
+    )
        
     scheme = {
         "state": {"vshape": env_info["state_shape"]},
         "obs": {"vshape": env_info["obs_shape"], "group": "agents"},
         "hidden_states": {"vshape": args.rnn_hidden_dim, "group": "agents"},
         "initial_agent": {"vshape": 1, "dtype": th.long}, # selected_agents
-        "followup_agents": {"vshape": args.num_followup_agents, "dtype": th.long}, # selected_agents_next 
+        "followup_agents": {"vshape": max_followup_agents, "dtype": th.long}, # selected_agents_next (supports both wolfpack and continuous)
         "actions": {"vshape": (1,), "group": "agents", "dtype": th.long},
         "forced_actions": {"vshape": (1,), "group": "agents", "dtype": th.long},
         "attacker_actions" : {"vshape": (1,), "group": "agents", "dtype": th.long},
@@ -172,7 +202,7 @@ def run_sequential(args, logger):
         learner.cuda()
 
     if args.pretrain == True:
-        model_path = f"pretrain_model/{args.name}/" + args.env_args["map_name"]
+        model_path = f"pretrain_model/qmix/" + args.env_args["map_name"]
         learner.load_models(model_path)
         print("pretrain")
 
@@ -211,8 +241,23 @@ def run_sequential(args, logger):
         runner.t_env = timestep_to_load
 
         if args.evaluate or args.save_replay:
-            evaluate_sequential(args, runner)
-            evaluate_sequential_wolfpack(args, runner)
+            runner.log_train_stats_t = runner.t_env
+            if args.learner == "q_learner":
+                evaluate_sequential(args, runner)
+            elif args.learner == "WALL_q_learner":
+                evaluate_sequential(args, runner)
+                evaluate_sequential_wolfpack(args, runner)
+                evaluate_sequential_continuous(args, runner)
+            elif args.learner == "Causal_q_learner":
+                evaluate_sequential(args, runner)               
+                evaluate_sequential_wolfpack(args, runner)
+                evaluate_sequential_continuous(args, runner)
+                evaluate_random(args, runner)
+            # Print the aggregated evaluation stats before exiting
+            logger.log_stat("episode", runner.t_env, runner.t_env)
+            logger.print_recent_stats()
+            logger.console_logger.info("Finished Evaluation")
+
             return
 
     # start training

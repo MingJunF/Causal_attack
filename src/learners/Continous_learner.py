@@ -517,3 +517,20 @@ class CausalQLearner:
             self.optimizer_obs_predictor.load_state_dict(th.load("{}/optimizer_obs_predictor.th".format(path), map_location=lambda storage, loc: storage))
         except FileNotFoundError:
             print("Warning: obs_predictor checkpoint not found, skipping load")
+
+    def load_attackers(self, path):
+        """Load attacker-related modules (planning/qdiff/obs predictor) and their optimizers."""
+        # Planning transformer
+        self.planning_transformer.load_state_dict(th.load("{}/planning_transformer.th".format(path), map_location=lambda storage, loc: storage))
+        self.optimizer_planning.load_state_dict(th.load("{}/optimizer_planning.th".format(path), map_location=lambda storage, loc: storage))
+
+        # Q-difference transformer
+        self.qdiff_transformer.load_state_dict(th.load("{}/qdiff_transformer.th".format(path), map_location=lambda storage, loc: storage))
+        self.optimizer_qdiff.load_state_dict(th.load("{}/optimizer_qdiff.th".format(path), map_location=lambda storage, loc: storage))
+
+        # Observation predictor (continuous follow-up attack)
+        try:
+            self.obs_predictor.load_state_dict(th.load("{}/obs_predictor.th".format(path), map_location=lambda storage, loc: storage))
+            self.optimizer_obs_predictor.load_state_dict(th.load("{}/optimizer_obs_predictor.th".format(path), map_location=lambda storage, loc: storage))
+        except FileNotFoundError:
+            print("Warning: obs_predictor checkpoint not found, skipping load in load_attackers")
