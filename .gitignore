@@ -73,3 +73,5 @@ Thumbs.db
 # =========================
 
 _sacred/
+!pretrain_model/**/*.pt
+!pretrain_model/**/*.pth
