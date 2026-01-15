@@ -70,7 +70,7 @@ def run(_run, _config, _log):
                         group='',
                         dir=str(wandb_exp_direc),
                         job_type="",
-                        #mode="disabled",
+                        mode="disabled",
                         reinit=True)
 
     # sacred is on by default

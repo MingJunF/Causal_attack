@@ -36,7 +36,6 @@ attack_period: 20
 
 num_attack_train: 12
 num_attack_test: 8
-num_followup_agents_wall: 2
 num_followup_agents: 1
 
 # --- Transformer ---
