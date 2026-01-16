@@ -38,5 +38,7 @@ QPLEX
 ```shell
 python3 src/main.py --config=wall_qplex --env-config=sc2 with env_args.map_name=2s3z num_attack_test=8 num_attack_train=12 num_followup_agents=2 pretrain=True 
 ```
+python3 src/main.py --config=wall_vdn --env-config=sc2 with env_args.map_name=3s_vs_3z num_attack_test=4 num_attack_train=16 num_followup_agents=1 pretrain=True 
 
+python3 src/main.py --config=continous_vdn --env-config=sc2 with env_args.map_name=3s_vs_3z num_attack_test=4 num_attack_train=16 num_followup_agents=1 pretrain=True 
 ## Publication
