@@ -140,17 +140,10 @@ class QLearner:
         grad_norm = th.nn.utils.clip_grad_norm_(self.params, self.args.grad_norm_clip)
         self.optimiser.step()
 
-        # self.training_steps += 1
-        # if (
-        #     self.args.target_update_interval_or_tau > 1
-        #     and (self.training_steps - self.last_target_update_step)
-        #     / self.args.target_update_interval_or_tau
-        #     >= 1.0
-        # ):
-        #     self._update_targets_hard()
-        #     self.last_target_update_step = self.training_steps
-        # elif self.args.target_update_interval_or_tau <= 1.0:
-        #     self._update_targets_soft(self.args.target_update_interval_or_tau)
+        # Update target network
+        if (episode_num - self.last_target_update_episode) / self.args.target_update_interval >= 1.0:
+            self._update_targets_hard()
+            self.last_target_update_episode = episode_num
 
         if t_env - self.log_stats_t >= self.args.learner_log_interval:
             self.logger.log_stat("loss", loss.item(), t_env)
