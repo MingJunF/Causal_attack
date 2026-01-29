@@ -1,0 +1,93 @@
+# --- QMIX ego-agent specific parameters ---
+
+# use epsilon greedy action selector
+action_selector: "epsilon_greedy_attack"
+#epsilon_start: 0.1
+#epsilon_finish: 0.02
+epsilon_start: 0.1
+epsilon_finish: 0.02
+epsilon_anneal_time: 8000
+#t_env
+
+runner: "episode_robust"
+
+buffer_size: 8000
+
+# update the target network every {} episodes
+target_update_interval: 200
+
+# use the Q_Learner to train
+agent_output_type: "q"
+learner: "q_learner"
+double_q: True
+mixer: "qmix"
+mixing_embed_dim: 32
+hypernet_layers: 2
+hypernet_embed: 64
+
+name: "qmix_attacker"
+# --- Default Attacker specific parameters --- #
+attacker: "mlp" # Default mlp agent
+attacker_hidden_dim: 64 # Size of hidden dim for default mlp attacker
+attack_mode: "action"
+attacker_action_selector: "sparse"
+attacker_soft_tau: 0.005
+attacker_buffer_size: 1000 # small -> care recent trajs
+local_results_path: "robust_results"
+
+
+
+# --- Attacker parameters ---
+attacker_type: RL
+pretrain: True
+mac: "attack_mac"
+population_train_steps: 6
+population_train_num: 1
+individual_sample_episode: 4
+save_archive_interval: 400
+select_strategy: "random"
+spare_lambda: 0.04
+attack_batch_size: 10
+min_jsdloss_sample: 64
+attacker_eval_num: 4
+smoothing_factor: 0.02
+gen_random_start: 0.4
+gen_random_end: 0.05
+threshold_ratio_start: 0.9
+threshold_ratio_end: 0.5
+attack_nepisode: 5
+default_nepisode: 5
+truncation: False
+shaping_reward: True
+one_buffer: True
+#seed: 2
+concat_left_time: True
+penalty: True
+penalty_weight: 0.5
+long_eval_interval: 100
+attack_lr: 0.0002
+ego_train_step: 10
+go_on: False
+train_attack_threshold: 0
+
+archive_size: 15
+jsd_beta: 1.2
+eval_num: 100
+generation: 800
+finetune_gen: 500
+eval_na_path: "./ego_models/2s3z"
+archive_load_path: ""
+ego_agent_path: ""
+start_eval: False
+gpu_id: 0
+attack_num: 6
+test_attack_num: 6
+fine_tune: False
+pop_size: 4
+run_type: "robust" # robust, attack, attack_na, robust_na, eval_na
+test_attacker_archive_path: ""
+diversity: True
+sparse_ref_delta: 0.05
+#sparse_ref_delta: 0
+load_sparse_ref_delta: 0.05
+train_random: False

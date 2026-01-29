@@ -35,4 +35,5 @@ websocket-client
 whichcraft
 wrapt
 wandb
+tqdm
 SMAC @ git+https://github.com/oxwhirl/smac.git@12614f1760427026cce82083dc3f0ab3ff1d939e
